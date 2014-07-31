@@ -49,15 +49,15 @@ window.findNRooksSolution = function(n){
 
   for (var row = 0; row < grid.length; row++){
     for (var col = 0; col < grid.length; col ++){
-        grid[row][col];
-        if (!board.hasRowConflictAt(row) && !board.hasColConflictAt(col)){
-          numToInsert--;
-        } else {
-          grid[row][col];
-        };
-        if (numToInsert === 0){
-          return grid;
-        }
+      grid[row][col] = 1;
+      if (!board.hasRowConflictAt(row) && !board.hasColConflictAt(col)){
+        numToInsert--;
+      } else {
+        grid[row][col] = 0;
+      }
+      if (numToInsert === 0){
+        return grid;
+      }
     }
   }
   return undefined;
@@ -68,35 +68,36 @@ window.findNRooksSolution = function(n){
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
+  var solutionCount = 0; //fixme
+  var board = new Board({n:n});
 
-  var solutionExists = function(n, startingRow, startingCol){
-    console.log("starting row, col", startingRow, startingCol);
-    if (Array.isArray(window.findNRooksSolution(n, startingRow, startingCol))){
-      console.log("solution:...", window.findNRooksSolution(n, startingRow, startingCol));
-      return true;
-    }
-    return false;
-  };
+  var count = function(rowIndex){
 
-  var solutionCount = 0;
-  var startingRow = 0;
-  var startingCol = 0;
-
-  if (n === 2){ return 2 };
-
-  while (startingRow < n){
-
-    if (solutionExists(n, startingRow, startingCol)){
+    //if row === n , solution ++ because we have reached the end, if not exit return
+    //
+    //find targetRow from rowIndex, iterate through and insert Rook if no column, then count(next), if there is column, then toggle back to zero, and iterate to next row index
+    //
+    if (rowIndex >= n){
       solutionCount++;
+      return;
     }
+    var targetRow = board.attributes[rowIndex];
 
-    startingCol = startingCol + 1;
-    if (startingCol === n){
-      startingRow = startingRow + 1;
-      startingCol = 0;
+    for (var col = 0; col < board.attributes.n; col ++){
+      // var cell = targetRow[col];
+      // cell = 1;
+      board.togglePiece(rowIndex, col);
+      if (!board.hasColConflictAt(col)){
+        count(rowIndex+1);
+      }
+      board.togglePiece(rowIndex, col);
     }
-  }
+  };
+  count(0);
+
+  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
+  //count(rowIndex)
 };
 
 
