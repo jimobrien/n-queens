@@ -128,15 +128,23 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    //
+    // This function scan both above and below the middle diagonal of the matrix in parallel.
+    // It takes one input which is the return value of _getFirstRowColumnIndexForMajorDiagonalOn.
+    //
+    //
+    //
+    //
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+
+      // The below takes the input and reverses it to find the starting position of a SINGLE (parallel) diagonal check
       var grid = this.rows();
-      var aboveDiagonalLine = majorDiagonalColumnIndexAtFirstRow;
-      if (majorDiagonalColumnIndexAtFirstRow === 0) {
+      var aboveDiagonalLine = majorDiagonalColumnIndexAtFirstRow; // set the index for looking above the midline
+
+      if (majorDiagonalColumnIndexAtFirstRow === 0) { // if the index is 0 set the belowDiagonalLine to 0
         var belowDiagonalLine = 0;
-        console.log("im in IF", belowDiagonalLine);
       } else {
-        var belowDiagonalLine = majorDiagonalColumnIndexAtFirstRow;
-        console.log("im in ELSE", belowDiagonalLine);
+        var belowDiagonalLine = majorDiagonalColumnIndexAtFirstRow; // otherwise set to value
       }
 
       // var belowDiagonalLine = majorDiagonalColumnIndexAtFirstRow === 0 ? aboveDiagonalLine : - majorDiagonalColumnIndexAtFirstRow;
@@ -162,7 +170,6 @@
           belowCounter += 1;
         }
 
-//         if (aboveCounter === 2) {
         if (aboveCounter === 2 || belowCounter === 2) {
           return true;
         }
@@ -176,7 +183,7 @@
         cellAbove = grid[aboveCellRow] !== undefined ? grid[aboveCellRow][aboveCellCol] : undefined;
         cellBelow = grid[belowCellRow] !== undefined ? grid[belowCellRow][belowCellCol] : undefined;
       }
-      console.log('broken');
+
       return false; // fixme
     },
 
@@ -185,8 +192,10 @@
       var grid = this.rows();
 
       for (var i = 0; i < grid.length; i++) {
+        // pass the index to the helper to get the diagColIndex (in order to iterate through ALL of the starting positions for diagonal check)
         var majorDiagonalColumnIndexAtFirstRow = this._getFirstRowColumnIndexForMajorDiagonalOn(0, i);
 
+        // pass the diagColIndex to the majorConflictAt
         if (this.hasMajorDiagonalConflictAt(majorDiagonalColumnIndexAtFirstRow)) {
           return true;
         }
