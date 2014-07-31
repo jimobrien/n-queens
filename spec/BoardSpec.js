@@ -46,7 +46,7 @@ describe("Board", function() {
     ]);
   });
 
-  describe("Board with major diagonal conflicts", function() {
+  describe("Board with major diagonal conflicts above the line", function() {
     verifyConflictTypes(['majorDiagonal', 'queens'], [
       [0, 1, 0, 0],
       [0, 0, 1, 0],
@@ -54,6 +54,41 @@ describe("Board", function() {
       [0, 0, 0, 0]
     ]);
   });
+
+  describe("Board with major diagonal conflicts below the line", function() {
+    verifyConflictTypes(['majorDiagonal', 'queens'], [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0]
+    ]);
+  });
+
+  describe('Board has no major diagonal conflicts with a queen on each side of the line', function() {
+
+    it('hasAnyMajorDiagonalConflicts() should return false', function() {
+      var board = new Board([[0, 0, 1, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0]]);
+
+      expect(board.hasAnyMajorDiagonalConflicts()).to.be.equal(false);
+    });
+  });
+
+  describe('Board has major diagonal conflicts with two queens on the middle line', function() {
+
+    it('hasAnyMajorDiagonalConflicts() should return true', function() {
+      var board = new Board([[0, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0]]);
+
+      expect(board.hasAnyMajorDiagonalConflicts()).to.be.equal(true);
+    });
+  });
+
+
 
   describe("Board with minor diagonal conflicts", function() {
     verifyConflictTypes(['minorDiagonal', 'queens'], [
