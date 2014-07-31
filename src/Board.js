@@ -135,25 +135,15 @@
     //
     //
     //
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-
+    hasMajorDiagonalConflictAt: function(startIndex) {
       // The below takes the input and reverses it to find the starting position of a SINGLE (parallel) diagonal check
       var grid = this.rows();
-      var aboveDiagonalLine = majorDiagonalColumnIndexAtFirstRow; // set the index for looking above the midline
 
-      if (majorDiagonalColumnIndexAtFirstRow === 0) { // if the index is 0 set the belowDiagonalLine to 0
-        var belowDiagonalLine = 0;
-      } else {
-        var belowDiagonalLine = majorDiagonalColumnIndexAtFirstRow; // otherwise set to value
-      }
-
-      // var belowDiagonalLine = majorDiagonalColumnIndexAtFirstRow === 0 ? aboveDiagonalLine : - majorDiagonalColumnIndexAtFirstRow;
-
-      var aboveCellCol = aboveDiagonalLine;
+      var aboveCellCol = (grid.length - 1) - startIndex;
       var aboveCellRow = 0;
 
       var belowCellCol = 0;
-      var belowCellRow = belowDiagonalLine;
+      var belowCellRow = (grid.length - 1) - startIndex;
 
       var cellAbove = grid[aboveCellRow][aboveCellCol];
       var cellBelow = grid[belowCellRow][belowCellCol];
@@ -192,11 +182,7 @@
       var grid = this.rows();
 
       for (var i = 0; i < grid.length; i++) {
-        // pass the index to the helper to get the diagColIndex (in order to iterate through ALL of the starting positions for diagonal check)
-        var majorDiagonalColumnIndexAtFirstRow = this._getFirstRowColumnIndexForMajorDiagonalOn(0, i);
-
-        // pass the diagColIndex to the majorConflictAt
-        if (this.hasMajorDiagonalConflictAt(majorDiagonalColumnIndexAtFirstRow)) {
+        if (this.hasMajorDiagonalConflictAt(i)) {
           return true;
         }
       }
@@ -210,12 +196,58 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+    hasMinorDiagonalConflictAt: function(startIndex) {
+      // The below takes the input and reverses it to find the starting position of a SINGLE (parallel) diagonal check
+      var grid = this.rows();
+
+      var aboveCellCol = startIndex; // 0
+      var aboveCellRow = 0; // 0
+
+      var belowCellCol = grid.length - 1; // 3
+      var belowCellRow = (grid.length - 1) - startIndex; // 0
+
+      var cellAbove = grid[aboveCellRow][aboveCellCol];
+      var cellBelow = grid[belowCellRow][belowCellCol];
+
+      var aboveCounter = 0;
+      var belowCounter = 0;
+
+      while (cellAbove !== undefined && cellBelow !== undefined) {
+        if (cellAbove === 1) {
+          aboveCounter += 1;
+        }
+
+        if (cellBelow === 1) {
+          belowCounter += 1;
+        }
+
+        if (aboveCounter === 2 || belowCounter === 2) {
+          return true;
+        }
+
+        aboveCellRow += 1;
+        aboveCellCol -= 1;
+
+        belowCellRow += 1;
+        belowCellCol -= 1;
+
+        cellAbove = grid[aboveCellRow] !== undefined ? grid[aboveCellRow][aboveCellCol] : undefined;
+        cellBelow = grid[belowCellRow] !== undefined ? grid[belowCellRow][belowCellCol] : undefined;
+      }
+
       return false; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      var grid = this.rows();
+
+      for (var i = 0; i < grid.length; i++) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+
       return false; // fixme
     }
 
