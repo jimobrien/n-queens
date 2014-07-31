@@ -45,8 +45,8 @@
       return (
         this.hasRowConflictAt(rowIndex) ||
         this.hasColConflictAt(colIndex) ||
-        this.hasMajorDiagonalConflictAt(this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)) ||
-        this.hasMinorDiagonalConflictAt(this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex))
+        this.hasMajorDiagonalConflictAt(colIndex) ||
+        this.hasMinorDiagonalConflictAt(colIndex)
       );
     },
 
@@ -207,7 +207,7 @@
       var belowCellRow = (grid.length - 1) - startIndex; // 0
 
       var cellAbove = grid[aboveCellRow][aboveCellCol];
-      var cellBelow = grid[belowCellRow][belowCellCol];
+      var cellBelow = grid[belowCellRow][belowCellCol]; // undefined[1]
 
       var aboveCounter = 0;
       var belowCounter = 0;

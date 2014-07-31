@@ -97,24 +97,102 @@ window.countNRooksSolutions = function(n) {
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
-  //count(rowIndex)
+
 };
 
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  //var solutionCount = 0;
+  var board = new Board({n:n});
+  var result;
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
-  return solution;
+  //debugger;
+  var count = function(rowIndex){
+
+    //if row === n , solution ++ because we have reached the end, if not exit return
+    //
+    //find targetRow from rowIndex, iterate through and insert Rook if no column, then count(next), if there is column, then toggle back to zero, and iterate to next row index
+    //debugger;
+    if (rowIndex >= n){
+
+      console.log('inside count', board.rows());
+      result =  board.rows();
+      return result;
+    }
+
+    //var targetRow = board.attributes[rowIndex];
+
+    for (var col = 0; col < board.attributes.n; col ++){
+      board.togglePiece(rowIndex, col);
+
+      if (!board.hasAnyQueensConflicts()){
+        result = count(rowIndex+1);
+        if (!result) {
+          board.togglePiece(rowIndex, col);
+        }
+      } else {
+        board.togglePiece(rowIndex, col);
+      }
+    }
+
+    return result;
+  };
+
+  count(0);
+
+  //var result = count(0);
+
+  console.log('Single solution for ' + n + ' queens:', JSON.stringify(result));
+  return result;
 };
 
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  //var solutionCount = 0;
+  var board = new Board({n:n});
+  var resultCount = 0;
+  var result;
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  //debugger;
+  var count = function(rowIndex){
+
+    //if row === n , solution ++ because we have reached the end, if not exit return
+    //
+    //find targetRow from rowIndex, iterate through and insert Rook if no column, then count(next), if there is column, then toggle back to zero, and iterate to next row index
+    //debugger;
+    if (rowIndex >= n){
+
+      console.log('inside count', board.rows());
+      result =  board.rows();
+      resultCount++;
+      return;
+    }
+
+    //var targetRow = board.attributes[rowIndex];
+
+    for (var col = 0; col < board.attributes.n; col ++){
+      board.togglePiece(rowIndex, col);
+
+      if (!board.hasAnyQueensConflicts()){
+        result = count(rowIndex+1);
+        if (!result) {
+          board.togglePiece(rowIndex, col);
+        }
+      } else {
+        board.togglePiece(rowIndex, col);
+      }
+    }
+
+    return result;
+  };
+
+  count(0);
+
+  //var result = count(0);
+
+  console.log('Single solution for ' + n + ' queens:', JSON.stringify(result));
+  return resultCount;
 };
