@@ -115,7 +115,7 @@ window.findNQueensSolution = function(n) {
     //
     //find targetRow from rowIndex, iterate through and insert Rook if no column, then count(next), if there is column, then toggle back to zero, and iterate to next row index
     //debugger;
-    if (rowIndex >= n){
+    if (rowIndex === n){
 
       console.log('inside count', board.rows());
       result =  board.rows();
@@ -127,14 +127,15 @@ window.findNQueensSolution = function(n) {
     for (var col = 0; col < board.attributes.n; col ++){
       board.togglePiece(rowIndex, col);
 
-      if (!board.hasAnyQueensConflicts()){
+      if (!board.hasAnyMinorDiagonalConflicts() && !board.hasAnyMajorDiagonalConflicts() && !board.hasColConflictAt(col)){
         result = count(rowIndex+1);
-        if (!result) {
-          board.togglePiece(rowIndex, col);
+
+        if (result) {
+          return result;
         }
-      } else {
-        board.togglePiece(rowIndex, col);
       }
+
+      board.togglePiece(rowIndex, col);
     }
 
     return result;
@@ -155,6 +156,7 @@ window.countNQueensSolutions = function(n) {
   var board = new Board({n:n});
   var resultCount = 0;
   var result;
+  var previousCol = [];
 
   //debugger;
   var count = function(rowIndex){
@@ -162,26 +164,27 @@ window.countNQueensSolutions = function(n) {
     //if row === n , solution ++ because we have reached the end, if not exit return
     //
     //find targetRow from rowIndex, iterate through and insert Rook if no column, then count(next), if there is column, then toggle back to zero, and iterate to next row index
-    //debugger;
+    // debugger;
     if (rowIndex >= n){
-
-      console.log('inside count', board.rows());
       result =  board.rows();
       resultCount++;
+      previousCol.pop();
       return;
     }
 
     //var targetRow = board.attributes[rowIndex];
 
     for (var col = 0; col < board.attributes.n; col ++){
-      board.togglePiece(rowIndex, col);
-
-      if (!board.hasAnyQueensConflicts()){
-        result = count(rowIndex+1);
-        if (!result) {
-          board.togglePiece(rowIndex, col);
+      // console.log("I am prevCol", JSON.stringify(previousCol));
+      // console.log("I am the current coords: ", rowIndex, col);
+      if( previousCol.indexOf(col) === -1) {
+        // console.log("I am not contained in prevCol and working: ", rowIndex, col);
+        board.togglePiece(rowIndex, col);
+        if (!board.hasAnyMinorDiagonalConflicts() && !board.hasAnyMajorDiagonalConflicts() && !board.hasColConflictAt(col)){
+          previousCol.push(col);
+          result = count(rowIndex+1);
         }
-      } else {
+        previousCol.pop();
         board.togglePiece(rowIndex, col);
       }
     }

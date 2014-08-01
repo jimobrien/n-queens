@@ -40,15 +40,14 @@ describe('solvers', function() {
 
   });
 
-  describe('countNQueensSolutions()', function() {
+  describe.only('countNQueensSolutions()', function() {
 
-    it('finds the number of valid solutions for n = 15', function() {
+    it('finds the number of valid solutions for n = 8', function() {
 
-      var solutionCount = countNQueensSolutions(12);
-      var expectedSolutionCount =  14200;
+      var solutionCount = countNQueensSolutions(8);
+      var expectedSolutionCount =  92;
 
       expect(solutionCount).to.be.equal(expectedSolutionCount);
-
     });
 
   });
